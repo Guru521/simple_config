@@ -8,6 +8,7 @@ pub fn parse(scfg_str: &str) -> HashMap<String, String> {
     let mut option_names_values: HashMap<String, String> = HashMap::new();
     datas
         .iter()
+        .filter(|string| !string.is_empty())
         .map(|string| string.split(':').collect::<Vec<&str>>())
         .filter(|string| {
             !string[0].trim().to_owned().starts_with('#')
@@ -54,5 +55,9 @@ fn test_scfg() {
             .unwrap()
             .split(),
         vec!["main", "utils", "math"]
-    )
+    );
+    assert_eq!(
+        parse("file_name: main.rs, \n    ,,,  ,"),
+        HashMap::from([(String::from("file_name"), String::from("main.rs"))])
+    );
 }
