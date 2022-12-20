@@ -9,7 +9,7 @@ pub fn parse(scfg_str: &str) -> HashMap<String, String> {
     datas
         .iter()
         .filter(|string| !string.is_empty())
-        .map(|string| string.split(':').collect::<Vec<&str>>())
+        .map(|string| string.split(&[':', '='][..]).collect::<Vec<&str>>())
         .filter(|string| {
             !string[0].trim().to_owned().starts_with('#')
                 && !string[1].trim().to_owned().starts_with('#')
@@ -59,5 +59,12 @@ fn test_scfg() {
     assert_eq!(
         parse("file_name: main.rs, \n    ,,,  ,"),
         HashMap::from([(String::from("file_name"), String::from("main.rs"))])
+    );
+    assert_eq!(
+        parse("config1: c1, config2 = c2"),
+        HashMap::from([
+            (String::from("config1"), String::from("c1")),
+            (String::from("config2"), String::from("c2")),
+        ])
     );
 }
